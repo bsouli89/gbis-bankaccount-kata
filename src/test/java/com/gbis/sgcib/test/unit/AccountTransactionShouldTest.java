@@ -18,7 +18,7 @@ import com.gbis.sgcib.kata.service.AccountServices;
  * @author souli
  *
  */
-public class AccountTransactionTest {
+public class AccountTransactionShouldTest {
 	private com.gbis.sgcib.kata.model.Account account;
 	private AccountServices accountMgr;
 
