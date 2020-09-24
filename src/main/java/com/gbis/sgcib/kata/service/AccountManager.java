@@ -25,31 +25,6 @@ public class AccountManager implements Serializable, AccountServices {
 	private final Logger LOG = LoggerFactory.getLogger(AccountManager.class);
 
 	/**
-	 * @param account
-	 * @return balance
-	 * This method will return the balance of an account
-	 */
-	public Double getBalance(Account account) {
-		Double balance = account.gettransactions().stream().mapToDouble(transaction -> {
-			return transaction.getAmount() * (transaction.isDepositTransaction() ? 1 : -1);
-		}).sum();
-		LOG.info("Account  balance is:{}",balance);
-		return balance;
-	}
-	/**
-	 * @param transaction
-	 * @param account
-	 * @return
-	 * This method will return the balance of an account at a transaction
-	 */
-	public Double getBalanceAttransaction(Transaction transaction, Account account) {
-		return account.gettransactions().stream().filter(op -> {
-			return op.getReference() <= transaction.getReference();
-		}).mapToDouble(op -> {
-			return op.getAmount() * (op.isDepositTransaction() ? 1 : -1);
-		}).sum();
-	}
-	/**
 	 * @param amount
 	 * @param account
 	 * @return the  deposit transaction object
@@ -70,7 +45,7 @@ public class AccountManager implements Serializable, AccountServices {
 	 * This method will execute a withdrawal transaction when the balance is available  
 	 */
 	public Transaction withdrawal(Double amount, Account account) throws UnauthorizedTransactionException {
-		if (getBalance(account) < amount) {
+		if (account.getBalance() < amount) {
 			throw new UnauthorizedTransactionException(account, TransactionType.WITHDRAWAL);
 		}
 		Transaction transaction = new Transaction(new Date(System.currentTimeMillis()), amount,
@@ -93,7 +68,7 @@ public class AccountManager implements Serializable, AccountServices {
 					.append(transaction.getDateTime()).append(BankConstants.TRANSACTION_STATEMENT_SEPARATOR)
 					.append((transaction.isDepositTransaction() ? "" : "-") + transaction.getAmount())
 					.append(BankConstants.TRANSACTION_STATEMENT_SEPARATOR)
-					.append(getBalanceAttransaction(transaction,account))
+					.append(account.getBalanceAttransaction(transaction))
 					.append(System.lineSeparator());
 		});
 
@@ -101,4 +76,5 @@ public class AccountManager implements Serializable, AccountServices {
 
 		return statementSB.toString();
 	}
+	
 }

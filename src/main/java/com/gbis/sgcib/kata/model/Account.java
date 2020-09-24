@@ -37,6 +37,32 @@ public class Account implements Serializable {
 		return transactions;
 	}
 	
+	/**
+	 * @param transaction
+	 * @param account
+	 * @return
+	 * This method will return the balance of an account at a transaction
+	 */
+	public Double getBalanceAttransaction(Transaction transaction) {
+		return this.gettransactions().stream().filter(op -> {
+			return op.getReference() <= transaction.getReference();
+		}).mapToDouble(op -> {
+			return op.getAmount() * (op.isDepositTransaction() ? 1 : -1);
+		}).sum();
+	}
+	
+	/**
+	 * @param account
+	 * @return balance
+	 * This method will return the balance of an account
+	 */
+	public Double getBalance() {
+		Double balance = this.gettransactions().stream().mapToDouble(transaction -> {
+			return transaction.getAmount() * (transaction.isDepositTransaction() ? 1 : -1);
+		}).sum();
+		return balance;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

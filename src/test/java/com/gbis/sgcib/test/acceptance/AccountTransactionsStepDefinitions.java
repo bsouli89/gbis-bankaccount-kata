@@ -4,6 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gbis.sgcib.kata.service.AccountHistoryMgr;
+import com.gbis.sgcib.kata.service.AccountHistoryServices;
 import com.gbis.sgcib.kata.service.AccountManager;
 import com.gbis.sgcib.kata.service.AccountServices;
 
@@ -21,7 +23,7 @@ public class AccountTransactionsStepDefinitions {
 	private com.gbis.sgcib.kata.model.Account account;
 	private AccountServices accountMgr;
 	private String accountStatement;
-	
+	private AccountHistoryServices accountHistory;
 	
 	private final Logger LOG = LoggerFactory.getLogger(AccountTransactionsStepDefinitions.class);
 
@@ -30,6 +32,7 @@ public class AccountTransactionsStepDefinitions {
 	public void setUp() {
 		account = new com.gbis.sgcib.kata.model.Account();
 		accountMgr=new AccountManager();
+		accountHistory=new AccountHistoryMgr();
 		
 	}
 	
@@ -51,7 +54,7 @@ public class AccountTransactionsStepDefinitions {
 
 	@When("I ask the account statement")
 	public void iAskTheAccountStatement() {
-		accountStatement = accountMgr.showAccounttransactionHistory(account);
+		accountStatement = accountHistory.showAccounttransactionHistory(account);
 	}
 
 	@Then("My account's balance should be {int} euros")
